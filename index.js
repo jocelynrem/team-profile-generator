@@ -10,22 +10,22 @@ const managerQues = [
     {
         type: 'input',
         name: 'name',
-        message: 'Manager name:',
+        message: 'Enter the team manager name:',
     },
     {
         type: 'input',
         name: 'ID',
-        message: 'Manager ID:',
+        message: 'Team manager ID:',
     },
     {
         type: 'input',
         name: 'email',
-        message: 'Manager email:'
+        message: 'Team manager email:'
     },
     {
         type: 'input',
-        name: 'officeNumber',
-        message: "Manager office number:"
+        name: 'officeNum',
+        message: "Team manager office number:"
     },
 ];
 
@@ -37,3 +37,50 @@ const roleQues = [
         choices: ['Engineer', 'Intern'],
     }
 ];
+
+
+const engineerQues = [
+    {
+        type: 'input',
+        name: 'name',
+        message: 'Enter the employee name:',
+    },
+    {
+        type: 'input',
+        name: 'ID',
+        message: 'Employee ID:',
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'Employee email:',
+    },
+    {
+        type: 'input',
+        name: 'github',
+        message: 'Enter the engineer\'s GitHub username',
+    },
+]
+
+const internQuest = [
+    {
+        type: 'input',
+        name: 'name',
+        message: 'Enter intern name:',
+    },
+    {
+        type: 'input',
+        name: 'ID',
+        message: 'Intern ID:',
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'Intern email:',
+    },
+    {
+        type: 'input',
+        name: 'school',
+        message: 'What school does the intern attend?',
+    },
+]
