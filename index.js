@@ -3,10 +3,10 @@ const fs = require("fs");
 const validator = require("email-validator");
 
 
-const Employee = require("./lib/Employee")
-const Engineer = require("./lib/Engineer")
-const Manager = require("./lib/Manager")
-const Intern = require("./lib/Intern")
+const Employee = require("./lib/Employee");
+const Engineer = require("./lib/Engineer");
+const Manager = require("./lib/Manager");
+const Intern = require("./lib/Intern");
 
 const employeeQues = [
     {
@@ -30,7 +30,7 @@ const employeeQues = [
             return console.log("Please enter a valid response");
         },
     },
-]
+];
 
 const managerQues = [
     {
@@ -49,14 +49,13 @@ const teamQues = [
     }
 ];
 
-
 const engineerQues = [
     {
         type: 'input',
         name: 'github',
         message: 'Enter the engineer\'s GitHub username',
     },
-]
+];
 
 const internQuest = [
     {
@@ -64,7 +63,7 @@ const internQuest = [
         name: 'school',
         message: 'What school does the intern attend?',
     },
-]
+];
 
 const managerHTML = (manager) => {
     const { name, id, officeNum, email } = manager
@@ -105,7 +104,7 @@ const managerHTML = (manager) => {
                 </div>
             </div>`
     fs.writeFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
-}
+};
 
 const engineerHTML = (engineer) => {
     const { name, id, github, email } = engineer
@@ -126,7 +125,7 @@ const engineerHTML = (engineer) => {
         </div>
     </div>`
     fs.appendFile('./dist/team.html', eHTML, (err) => err ? console.log(err) : '')
-}
+};
 
 const internHTML = (intern) => {
     const { name, id, school, email } = intern
@@ -147,9 +146,9 @@ const internHTML = (intern) => {
         </div>
     </div>`
     fs.appendFile('./dist/team.html', iHTML, (err) => err ? console.log(err) : '')
-}
+};
 
-const managerFIN = () => {
+const startGen = () => {
     inquirer.prompt(employeeQues).then((answers) => {
         const employee = new Employee(answers.name, answers.id, answers.email)
         inquirer.prompt(managerQues).then((answers) => {
@@ -158,9 +157,9 @@ const managerFIN = () => {
             addOrDone();
         })
     })
-}
+};
 
-const anotherEmployee = () => {
+const addEmployee = () => {
     inquirer.prompt(employeeQues).then((answers) => {
         const employee = new Employee(answers.name, answers.id, answers.email)
         inquirer.prompt(teamQues).then((answer) => {
@@ -179,7 +178,7 @@ const anotherEmployee = () => {
             }
         })
     })
-}
+};
 
 const addOrDone = () => {
     inquirer.prompt([{
@@ -189,7 +188,7 @@ const addOrDone = () => {
         default: true,
     }]).then((answer) => {
         if (answer.newTeamMem) {
-            anotherEmployee();
+            addEmployee();
         } else {
             console.log('Team Profile has been generated');
             const endHTML = `
@@ -200,9 +199,9 @@ const addOrDone = () => {
                 crossorigin="anonymous"></script>
         </body>
         </html>`
-        fs.appendFile('./dist/team.html', endHTML, (err) => err ? console.log(err) : '')
+            fs.appendFile('./dist/team.html', endHTML, (err) => err ? console.log(err) : '')
         }
     });
-}
+};
 
-managerFIN()
+startGen();
