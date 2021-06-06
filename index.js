@@ -1,5 +1,7 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
+const emailValidator = require('email-validator');
+
 
 const Employee = require("./lib/Employee")
 const Engineer = require("./lib/Engineer")
@@ -20,7 +22,13 @@ const managerQues = [
     {
         type: 'input',
         name: 'email',
-        message: 'Team manager email:'
+        message: 'Team manager email:',
+        validate: function (response) {
+            if (emailValidator) {
+                return true;
+            }
+            return console.log("Please enter a valid response");
+        },
     },
     {
         type: 'input',
@@ -85,18 +93,8 @@ const internQuest = [
     },
 ]
 
-const managerCall = () => {
-    inquirer.prompt(managerQues).then((answers) => {
-        const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
-        manager.role = new Manager().getRole();
-        mgrHtml(manager);
-    }).then(() => {
-        teamQues();
-    })
-}
-
 const managerHTML = (manager) => {
-    const { name, id, email, officeNum } = manager
+    const { name, id, officeNum, email } = manager
     const mHTML = `
     <div class =col>
         <div class="card" style="width: 13rem;">
@@ -109,8 +107,42 @@ const managerHTML = (manager) => {
                     <li>${id}</li>
                     <li>${officeNum}</li>
                     <li><a href="mailto:${email}" class="card-link">${email}</a></li>
+                </ul>
             </div>
         </div>
     <div>`
     fs.appendFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
 }
+
+const engineerHTML = (engineer) => {
+    const { name, id, github, email } = engineer
+    const mHTML = `
+    <div class="col">
+        <div class="card" style="width: 13rem;">
+            <div class="card-header bg-primary text-white">
+                <h4>Engineer</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">${name}</h5>
+                <ul>
+                    <li>${id}</li>
+                    <li><a href="https://github.com/${github}" class="card-link">GitHub Profile: ${github}</a></li>
+                    <li><a href="mailto:${email}" class="card-link">${email}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>`
+    fs.appendFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
+}
+
+const managerFIN = () => {
+    inquirer.prompt(managerQues).then((answers) => {
+        const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
+        manager.role = new Manager().getRole();
+        managerHTML(manager);
+    }).then(() => {
+        teamQues();
+    })
+}
+
+managerFIN()
