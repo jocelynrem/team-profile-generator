@@ -44,7 +44,7 @@ const teamQues = [
     {
         type: 'list',
         name: 'title',
-        message: "Which type of team member would you like to add?",
+        message: "Employee Title:",
         choices: ['Engineer', new inquirer.Separator(), 'Intern'],
     }
 ];
@@ -132,36 +132,40 @@ const internHTML = (intern) => {
 const managerFIN = () => {
     inquirer.prompt(employeeQues).then((answers) => {
         const employee = new Employee(answers.name, answers.id, answers.email)
-    }).then (() =>
-    inquirer.prompt(managerQues).then((answers) => {
-        const manager = new Manager(answers.officeNum)
-        managerHTML(manager);
+        managerHTML(employee);
     }).then(() => {
-        anotherEmployee();
-    })
-    )}
-
-const anotherEmployee = () => {
-    inquirer.prompt(teamQues).then((answer) => {
-        if (answer.role === 'Engineer') {
-            inquirer.prompt(employeeQues).then((answers) => {
-                const engineer = new Engineer(answer.name, answers.id, answers.github, answers.email)
-                engineer.role = new Engineer().getRole();
-                engineerHTML(engineer);
-                addMoreorDone()
-            })
-        } else {
-            inquirer.prompt(employeeQues, internQuest).then((answers) => {
-                const intern = new Intern(answers.name, answers.id, answers.school, answers.email)
-                intern.role = new Intern().getRole();
-                internHTML(intern);
-                addOrDone()
-            })
-        }
+        inquirer.prompt(managerQues).then((answers) => {
+            const manager = new Manager(answers.officeNum)
+            managerHTML(manager);
+            addOrDone();
+        })
     })
 }
 
-const addOrDone =() => {
+const anotherEmployee = () => {
+    inquirer.prompt(employeeQues).then((answers) => {
+        const employee = new Employee(answers.name, answers.id, answers.email)
+        inquirer.prompt(teamQues).then((answer) => {
+            if (answer.title === 'Engineer') {
+                engineerHTML(employee)
+                inquirer.prompt(engineerQues).then((answers) => {
+                    const engineer = new Engineer(answers.github)
+                    engineerHTML(engineer)
+                    addOrDone()
+                })
+            } else {
+                internHTML(employee)
+                inquirer.prompt(internQuest).then((answers) => {
+                    const intern = new Intern(answers.school)
+                    internHTML(intern)
+                    addOrDone()
+                })
+            }
+        })
+    })
+}
+
+const addOrDone = () => {
     inquirer.prompt([{
         type: 'confirm',
         name: 'newTeamMem',
@@ -169,7 +173,7 @@ const addOrDone =() => {
         default: true,
     }]).then((answer) => {
         if (answer.newTeamMem) {
-            teamQues();
+            anotherEmployee();
         } else {
             console.log('Team Profile has been generated');
         }
