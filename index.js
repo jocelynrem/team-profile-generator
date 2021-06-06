@@ -65,8 +65,9 @@ const internQuest = [
     },
 ];
 
-const managerHTML = (manager) => {
-    const { name, id, officeNum, email } = manager
+const managerHTML = (employee, manager) => {
+    const { name, id, email } = employee
+    const { officeNum } = manager
     const mHTML = `
     <!DOCTYPE html>
 <html lang="en">
