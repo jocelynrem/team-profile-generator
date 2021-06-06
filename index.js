@@ -116,7 +116,7 @@ const managerHTML = (manager) => {
 
 const engineerHTML = (engineer) => {
     const { name, id, github, email } = engineer
-    const mHTML = `
+    const eHTML = `
     <div class="col">
         <div class="card" style="width: 13rem;">
             <div class="card-header bg-primary text-white">
@@ -132,9 +132,29 @@ const engineerHTML = (engineer) => {
             </div>
         </div>
     </div>`
-    fs.appendFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
+    fs.appendFile('./dist/team.html', eHTML, (err) => err ? console.log(err) : '')
 }
 
+const internHTML = (manager) => {
+    const { name, id, school, email } = intern
+    const iHTML = `
+    <div class="col">
+        <div class="card" style="width: 13rem;">
+            <div class="card-header bg-info text-white">
+                <h4>Intern</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">${name}</h5>
+                <ul>
+                    <li>${id}</li>
+                    <li>${school}</li>
+                    <li><a href="mailto:${email}" class="card-link">${email}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>`
+    fs.appendFile('./dist/team.html', iHTML, (err) => err ? console.log(err) : '')
+}
 const managerFIN = () => {
     inquirer.prompt(managerQues).then((answers) => {
         const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
