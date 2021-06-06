@@ -14,7 +14,7 @@ const managerQues = [
     },
     {
         type: 'input',
-        name: 'ID',
+        name: 'id',
         message: 'Team manager ID:',
     },
     {
@@ -29,12 +29,12 @@ const managerQues = [
     },
 ];
 
-const roleQues = [
+const teamQues = [
     {
         type: 'list',
-        name: 'role',
+        name: 'teamRole',
         message: "Which type of team member would you like to add?",
-        choices: ['Engineer', 'Intern'],
+        choices: ['Engineer', new inquirer.Separator(), 'Intern'],
     }
 ];
 
@@ -47,7 +47,7 @@ const engineerQues = [
     },
     {
         type: 'input',
-        name: 'ID',
+        name: 'id',
         message: 'Employee ID:',
     },
     {
@@ -70,7 +70,7 @@ const internQuest = [
     },
     {
         type: 'input',
-        name: 'ID',
+        name: 'id',
         message: 'Intern ID:',
     },
     {
@@ -84,3 +84,33 @@ const internQuest = [
         message: 'What school does the intern attend?',
     },
 ]
+
+const managerCall = () => {
+    inquirer.prompt(managerQues).then((answers) => {
+        const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
+        manager.role = new Manager().getRole();
+        mgrHtml(manager);
+    }).then(() => {
+        teamQues();
+    })
+}
+
+const managerHTML = (manager) => {
+    const { name, id, email, officeNum } = manager
+    const mHTML = `
+    <div class =col>
+        <div class="card" style="width: 13rem;">
+            <div class="card-header bg-dark text-white">
+                <h4>Manager</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">${name}</h5>
+                <ul>
+                    <li>${id}</li>
+                    <li>${officeNum}</li>
+                    <li><a href="mailto:${email}" class="card-link">${email}</a></li>
+            </div>
+        </div>
+    <div>`
+    fs.appendFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
+}
