@@ -69,22 +69,42 @@ const internQuest = [
 const managerHTML = (manager) => {
     const { name, id, officeNum, email } = manager
     const mHTML = `
-    <div class =col>
-        <div class="card" style="width: 13rem;">
-            <div class="card-header bg-dark text-white">
-                <h4>Manager</h4>
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">${name}</h5>
-                <ul>
-                    <li>${id}</li>
-                    <li>${officeNum}</li>
-                    <li><a href="mailto:${email}" class="card-link">${email}</a></li>
-                </ul>
-            </div>
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="jumbotron jumbotron-fluid bg-success bg-gradient text-white">
+        <div class="container">
+            <h1 class="display-1">Team Profile</h1>
         </div>
-    <div>`
-    fs.appendFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
+    </div>
+    <div class=container>
+        <div class="row">
+            <div class =col>
+                <div class="card" style="width: 13rem;">
+                    <div class="card-header bg-dark text-white">
+                        <h4>Manager</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${name}</h5>
+                        <ul>
+                            <li>${id}</li>
+                            <li>${officeNum}</li>
+                            <li><a href="mailto:${email}" class="card-link">${email}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>`
+    fs.writeFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
 }
 
 const engineerHTML = (engineer) => {
@@ -132,11 +152,9 @@ const internHTML = (intern) => {
 const managerFIN = () => {
     inquirer.prompt(employeeQues).then((answers) => {
         const employee = new Employee(answers.name, answers.id, answers.email)
-        managerHTML(employee);
-    }).then(() => {
         inquirer.prompt(managerQues).then((answers) => {
             const manager = new Manager(answers.officeNum)
-            managerHTML(manager);
+            managerHTML(employee, manager);
             addOrDone();
         })
     })
@@ -147,17 +165,15 @@ const anotherEmployee = () => {
         const employee = new Employee(answers.name, answers.id, answers.email)
         inquirer.prompt(teamQues).then((answer) => {
             if (answer.title === 'Engineer') {
-                engineerHTML(employee)
                 inquirer.prompt(engineerQues).then((answers) => {
                     const engineer = new Engineer(answers.github)
-                    engineerHTML(engineer)
+                    engineerHTML(employee, engineer)
                     addOrDone()
                 })
             } else {
-                internHTML(employee)
                 inquirer.prompt(internQuest).then((answers) => {
                     const intern = new Intern(answers.school)
-                    internHTML(intern)
+                    internHTML(employee, intern)
                     addOrDone()
                 })
             }
@@ -176,6 +192,15 @@ const addOrDone = () => {
             anotherEmployee();
         } else {
             console.log('Team Profile has been generated');
+            const endHTML = `
+            </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+                crossorigin="anonymous"></script>
+        </body>
+        </html>`
+        fs.appendFile('./dist/team.html', endHTML, (err) => err ? console.log(err) : '')
         }
     });
 }
