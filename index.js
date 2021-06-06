@@ -1,6 +1,6 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
-const emailValidator = require('email-validator');
+const validator = require("email-validator");
 
 
 const Employee = require("./lib/Employee")
@@ -8,50 +8,11 @@ const Engineer = require("./lib/Engineer")
 const Manager = require("./lib/Manager")
 const Intern = require("./lib/Intern")
 
-const managerQues = [
+const employeeQues = [
     {
         type: 'input',
         name: 'name',
-        message: 'Enter the team manager name:',
-    },
-    {
-        type: 'input',
-        name: 'id',
-        message: 'Team manager ID:',
-    },
-    {
-        type: 'input',
-        name: 'email',
-        message: 'Team manager email:',
-        validate: function (response) {
-            if (emailValidator) {
-                return true;
-            }
-            return console.log("Please enter a valid response");
-        },
-    },
-    {
-        type: 'input',
-        name: 'officeNum',
-        message: "Team manager office number:"
-    },
-];
-
-const teamQues = [
-    {
-        type: 'list',
-        name: 'teamRole',
-        message: "Which type of team member would you like to add?",
-        choices: ['Engineer', new inquirer.Separator(), 'Intern'],
-    }
-];
-
-
-const engineerQues = [
-    {
-        type: 'input',
-        name: 'name',
-        message: 'Enter the employee name:',
+        message: 'Enter employee name:',
     },
     {
         type: 'input',
@@ -62,7 +23,34 @@ const engineerQues = [
         type: 'input',
         name: 'email',
         message: 'Employee email:',
+        validate: function (response) {
+            if (validator.validate("test@email.com")) {
+                return true;
+            }
+            return console.log("Please enter a valid response");
+        },
     },
+]
+
+const managerQues = [
+    {
+        type: 'input',
+        name: 'officeNum',
+        message: "Team manager office number:"
+    }
+];
+
+const teamQues = [
+    {
+        type: 'list',
+        name: 'title',
+        message: "Which type of team member would you like to add?",
+        choices: ['Engineer', new inquirer.Separator(), 'Intern'],
+    }
+];
+
+
+const engineerQues = [
     {
         type: 'input',
         name: 'github',
@@ -71,21 +59,6 @@ const engineerQues = [
 ]
 
 const internQuest = [
-    {
-        type: 'input',
-        name: 'name',
-        message: 'Enter intern name:',
-    },
-    {
-        type: 'input',
-        name: 'id',
-        message: 'Intern ID:',
-    },
-    {
-        type: 'input',
-        name: 'email',
-        message: 'Intern email:',
-    },
     {
         type: 'input',
         name: 'school',
@@ -135,7 +108,7 @@ const engineerHTML = (engineer) => {
     fs.appendFile('./dist/team.html', eHTML, (err) => err ? console.log(err) : '')
 }
 
-const internHTML = (manager) => {
+const internHTML = (intern) => {
     const { name, id, school, email } = intern
     const iHTML = `
     <div class="col">
@@ -155,14 +128,52 @@ const internHTML = (manager) => {
     </div>`
     fs.appendFile('./dist/team.html', iHTML, (err) => err ? console.log(err) : '')
 }
+
 const managerFIN = () => {
+    inquirer.prompt(employeeQues).then((answers) => {
+        const employee = new Employee(answers.name, answers.id, answers.email)
+    }).then (() =>
     inquirer.prompt(managerQues).then((answers) => {
-        const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
-        manager.role = new Manager().getRole();
+        const manager = new Manager(answers.officeNum)
         managerHTML(manager);
     }).then(() => {
-        teamQues();
+        anotherEmployee();
     })
+    )}
+
+const anotherEmployee = () => {
+    inquirer.prompt(teamQues).then((answer) => {
+        if (answer.role === 'Engineer') {
+            inquirer.prompt(employeeQues).then((answers) => {
+                const engineer = new Engineer(answer.name, answers.id, answers.github, answers.email)
+                engineer.role = new Engineer().getRole();
+                engineerHTML(engineer);
+                addMoreorDone()
+            })
+        } else {
+            inquirer.prompt(employeeQues, internQuest).then((answers) => {
+                const intern = new Intern(answers.name, answers.id, answers.school, answers.email)
+                intern.role = new Intern().getRole();
+                internHTML(intern);
+                addOrDone()
+            })
+        }
+    })
+}
+
+const addOrDone =() => {
+    inquirer.prompt([{
+        type: 'confirm',
+        name: 'newTeamMem',
+        message: 'Add more team members?',
+        default: true,
+    }]).then((answer) => {
+        if (answer.newTeamMem) {
+            teamQues();
+        } else {
+            console.log('Team Profile has been generated');
+        }
+    });
 }
 
 managerFIN()
