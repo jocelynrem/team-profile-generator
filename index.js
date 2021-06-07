@@ -10,15 +10,13 @@ const Intern = require("./lib/Intern");
 const { title } = require("process");
 
 
-const newMember = () => {
-    inquirer.prompt([{
-            type: 'list',
-            name: 'title',
-            message: "Employee Title:",
-            choices: ['Manager', 'Engineer', 'Intern'],
-    }])
-} 
 const questions = [
+    {
+        type: 'list',
+        name: 'title',
+        message: "Employee Title:",
+        choices: ['Manager', 'Engineer', 'Intern'],
+    },
     {
         type: 'input',
         name: 'name',
@@ -34,19 +32,19 @@ const questions = [
         type: 'input',
         name: 'officeNum',
         message: "Office number:",
-        when: newMember('Manager')
+        when: (answers) => answers.title === 'Manager'
     },
     {
         type: 'input',
         name: 'github',
         message: 'GitHub username:',
-        when: newMember("Engineer")
+        when: (answers) => answers.title === 'Engineer'
     },
     {
         type: 'input',
         name: 'school',
         message: 'School:',
-        when: newMember('Intern')
+        when: (answers) => answers.title === 'Intern'
     },
     {
         type: 'input',
@@ -118,14 +116,23 @@ const questions = [
 //     },
 // ];
 
-const teamMember = () => {
-    newMember()
+const newTeamMember = () => {
     inquirer.prompt(questions).then((answers) => {
-        
+        if (answers.title === 'Manager') {
+            const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
+            managerHTML(manager);
+        } else if (answers.title === 'Engineer') {
+            const engineer = new Engineer(answers.name, answers.id, answers.github, answers.email)
+            engineerHTML(engineer);
+        } else {
+            const intern =  new Intern(answers.name, answers.id, answers.school, answers.email)
+            internHTML(intern)
+        }
+        addOrDone();
     })
 }
 
-const managerHTML = ( manager) => {
+const managerHTML = (manager) => {
     const { name, id, email, officeNum } = manager
     const mHTML = `
     <!DOCTYPE html>
@@ -206,15 +213,15 @@ const internHTML = (intern) => {
         </div>
     </div>`
     fs.appendFile('./dist/team.html', iHTML, (err) => err ? console.log(err) : '')
-};  
-    
-const newManager = () => {
-       inquirer.prompt(questions).then((answers) => {
-        const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email )
-        managerHTML(manager);
-        addOrDone();
-    })
 };
+
+// const newManager = () => {
+//     inquirer.prompt(questions).then((answers) => {
+//         const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
+//         managerHTML(manager);
+//         addOrDone();
+//     })
+// };
 
 // const addEmployee = () => {
 //     inquirer.prompt(employeeQues).then((answers) => {
@@ -245,7 +252,7 @@ const addOrDone = () => {
         default: true,
     }]).then((answer) => {
         if (answer.newTeamMem) {
-            newMember();
+            newTeamMember();
         } else {
             console.log('Team Profile has been generated');
             const endHTML = `
@@ -261,4 +268,4 @@ const addOrDone = () => {
     });
 };
 
-newMember();
+newTeamMember();
