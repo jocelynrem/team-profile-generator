@@ -59,63 +59,6 @@ const questions = [
     },
 ]
 
-// const employeeQues = [
-//     {
-//         type: 'input',
-//         name: 'name',
-//         message: 'Enter employee name:',
-//     },
-//     {
-//         type: 'input',
-//         name: 'id',
-//         message: 'Employee ID:',
-//     },
-//     {
-//         type: 'input',
-//         name: 'email',
-//         message: 'Employee email:',
-//         validate: function (response) {
-//             if (validator.validate("test@email.com")) {
-//                 return true;
-//             }
-//             return console.log("Please enter a valid response");
-//         },
-//     },
-// ];
-
-// const managerQues = [
-//     {
-//         type: 'input',
-//         name: 'officeNum',
-//         message: "Team manager office number:"
-//     }
-// ];
-
-// const teamQues = [
-//     {
-//         type: 'list',
-//         name: 'title',
-//         message: "Employee Title:",
-//         choices: ['Engineer', new inquirer.Separator(), 'Intern'],
-//     }
-// ];
-
-// const engineerQues = [
-//     {
-//         type: 'input',
-//         name: 'github',
-//         message: 'Enter the engineer\'s GitHub username',
-//     },
-// ];
-
-// const internQuest = [
-//     {
-//         type: 'input',
-//         name: 'school',
-//         message: 'What school does the intern attend?',
-//     },
-// ];
-
 const newTeamMember = () => {
     inquirer.prompt(questions).then((answers) => {
         if (answers.title === 'Manager') {
@@ -214,35 +157,6 @@ const internHTML = (intern) => {
     </div>`
     fs.appendFile('./dist/team.html', iHTML, (err) => err ? console.log(err) : '')
 };
-
-// const newManager = () => {
-//     inquirer.prompt(questions).then((answers) => {
-//         const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
-//         managerHTML(manager);
-//         addOrDone();
-//     })
-// };
-
-// const addEmployee = () => {
-//     inquirer.prompt(employeeQues).then((answers) => {
-//         const employee = new Employee(answers.name, answers.id, answers.email)
-//         inquirer.prompt(teamQues).then((answer) => {
-//             if (answer.title === 'Engineer') {
-//                 inquirer.prompt(engineerQues).then((answers) => {
-//                     const engineer = new Engineer(answers.github)
-//                     engineerHTML(employee, engineer)
-//                     addOrDone()
-//                 })
-//             } else {
-//                 inquirer.prompt(internQuest).then((answers) => {
-//                     const intern = new Intern(answers.school)
-//                     internHTML(employee, intern)
-//                     addOrDone()
-//                 })
-//             }
-//         })
-//     })
-// };
 
 const addOrDone = () => {
     inquirer.prompt([{
