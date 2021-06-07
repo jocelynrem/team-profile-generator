@@ -7,17 +7,46 @@ const Employee = require("./lib/Employee");
 const Engineer = require("./lib/Engineer");
 const Manager = require("./lib/Manager");
 const Intern = require("./lib/Intern");
+const { title } = require("process");
 
-const employeeQues = [
+
+const newMember = () => {
+    inquirer.prompt([{
+            type: 'list',
+            name: 'title',
+            message: "Employee Title:",
+            choices: ['Manager', 'Engineer', 'Intern'],
+    }])
+} 
+const questions = [
     {
         type: 'input',
         name: 'name',
-        message: 'Enter employee name:',
+        message: 'Employee name:',
     },
     {
         type: 'input',
         name: 'id',
         message: 'Employee ID:',
+    },
+
+    {
+        type: 'input',
+        name: 'officeNum',
+        message: "Office number:",
+        when: newMember('Manager')
+    },
+    {
+        type: 'input',
+        name: 'github',
+        message: 'GitHub username:',
+        when: newMember("Engineer")
+    },
+    {
+        type: 'input',
+        name: 'school',
+        message: 'School:',
+        when: newMember('Intern')
     },
     {
         type: 'input',
@@ -30,44 +59,74 @@ const employeeQues = [
             return console.log("Please enter a valid response");
         },
     },
-];
+]
 
-const managerQues = [
-    {
-        type: 'input',
-        name: 'officeNum',
-        message: "Team manager office number:"
-    }
-];
+// const employeeQues = [
+//     {
+//         type: 'input',
+//         name: 'name',
+//         message: 'Enter employee name:',
+//     },
+//     {
+//         type: 'input',
+//         name: 'id',
+//         message: 'Employee ID:',
+//     },
+//     {
+//         type: 'input',
+//         name: 'email',
+//         message: 'Employee email:',
+//         validate: function (response) {
+//             if (validator.validate("test@email.com")) {
+//                 return true;
+//             }
+//             return console.log("Please enter a valid response");
+//         },
+//     },
+// ];
 
-const teamQues = [
-    {
-        type: 'list',
-        name: 'title',
-        message: "Employee Title:",
-        choices: ['Engineer', new inquirer.Separator(), 'Intern'],
-    }
-];
+// const managerQues = [
+//     {
+//         type: 'input',
+//         name: 'officeNum',
+//         message: "Team manager office number:"
+//     }
+// ];
 
-const engineerQues = [
-    {
-        type: 'input',
-        name: 'github',
-        message: 'Enter the engineer\'s GitHub username',
-    },
-];
+// const teamQues = [
+//     {
+//         type: 'list',
+//         name: 'title',
+//         message: "Employee Title:",
+//         choices: ['Engineer', new inquirer.Separator(), 'Intern'],
+//     }
+// ];
 
-const internQuest = [
-    {
-        type: 'input',
-        name: 'school',
-        message: 'What school does the intern attend?',
-    },
-];
+// const engineerQues = [
+//     {
+//         type: 'input',
+//         name: 'github',
+//         message: 'Enter the engineer\'s GitHub username',
+//     },
+// ];
 
-const managerHTML = (employee, manager) => {
-    const { name, id, email } = employee
-    const { officeNum } = manager
+// const internQuest = [
+//     {
+//         type: 'input',
+//         name: 'school',
+//         message: 'What school does the intern attend?',
+//     },
+// ];
+
+const teamMember = () => {
+    newMember()
+    inquirer.prompt(questions).then((answers) => {
+        
+    })
+}
+
+const managerHTML = ( manager) => {
+    const { name, id, email, officeNum } = manager
     const mHTML = `
     <!DOCTYPE html>
 <html lang="en">
@@ -147,39 +206,36 @@ const internHTML = (intern) => {
         </div>
     </div>`
     fs.appendFile('./dist/team.html', iHTML, (err) => err ? console.log(err) : '')
-};
-
-const startGen = () => {
-    inquirer.prompt(employeeQues).then((answers) => {
-        const employee = new Employee(answers.name, answers.id, answers.email)
-        inquirer.prompt(managerQues).then((answers) => {
-            const manager = new Manager(answers.officeNum)
-            managerHTML(employee, manager);
-            addOrDone();
-        })
+};  
+    
+const newManager = () => {
+       inquirer.prompt(questions).then((answers) => {
+        const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email )
+        managerHTML(manager);
+        addOrDone();
     })
 };
 
-const addEmployee = () => {
-    inquirer.prompt(employeeQues).then((answers) => {
-        const employee = new Employee(answers.name, answers.id, answers.email)
-        inquirer.prompt(teamQues).then((answer) => {
-            if (answer.title === 'Engineer') {
-                inquirer.prompt(engineerQues).then((answers) => {
-                    const engineer = new Engineer(answers.github)
-                    engineerHTML(employee, engineer)
-                    addOrDone()
-                })
-            } else {
-                inquirer.prompt(internQuest).then((answers) => {
-                    const intern = new Intern(answers.school)
-                    internHTML(employee, intern)
-                    addOrDone()
-                })
-            }
-        })
-    })
-};
+// const addEmployee = () => {
+//     inquirer.prompt(employeeQues).then((answers) => {
+//         const employee = new Employee(answers.name, answers.id, answers.email)
+//         inquirer.prompt(teamQues).then((answer) => {
+//             if (answer.title === 'Engineer') {
+//                 inquirer.prompt(engineerQues).then((answers) => {
+//                     const engineer = new Engineer(answers.github)
+//                     engineerHTML(employee, engineer)
+//                     addOrDone()
+//                 })
+//             } else {
+//                 inquirer.prompt(internQuest).then((answers) => {
+//                     const intern = new Intern(answers.school)
+//                     internHTML(employee, intern)
+//                     addOrDone()
+//                 })
+//             }
+//         })
+//     })
+// };
 
 const addOrDone = () => {
     inquirer.prompt([{
@@ -189,7 +245,7 @@ const addOrDone = () => {
         default: true,
     }]).then((answer) => {
         if (answer.newTeamMem) {
-            addEmployee();
+            newMember();
         } else {
             console.log('Team Profile has been generated');
             const endHTML = `
@@ -205,4 +261,4 @@ const addOrDone = () => {
     });
 };
 
-startGen();
+newMember();
