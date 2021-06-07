@@ -126,7 +126,7 @@ const engineerHTML = (engineer) => {
                 <h5 class="card-title">${name}</h5>
                 <ul>
                     <li>ID: ${id}</li>
-                    <li><a href="https://github.com/${github}" target="_blank" class="card-link">GitHub Profile: ${github}</a></li>
+                    <li><a href="https://github.com/${github}" target="_blank" class="card-link">GitHub: ${github}</a></li>
                     <li><a href="mailto:${email}" class="card-link">${email}</a></li>
                 </ul>
             </div>
