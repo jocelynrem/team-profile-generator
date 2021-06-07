@@ -1,6 +1,6 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
-const validator = require("email-validator");
+const validateEmail = require("js-email-validator");
 
 
 const Employee = require("./lib/Employee");
@@ -50,35 +50,11 @@ const questions = [
         type: 'input',
         name: 'email',
         message: 'Employee email:',
-        validate: function (response) {
-            if (validator.validate("test@email.com")) {
-                return true;
-            }
-            return console.log("Please enter a valid response");
-        },
+        validate: validateEmail
     },
 ]
-
-const newTeamMember = () => {
-    inquirer.prompt(questions).then((answers) => {
-        if (answers.title === 'Manager') {
-            const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
-            managerHTML(manager);
-        } else if (answers.title === 'Engineer') {
-            const engineer = new Engineer(answers.name, answers.id, answers.github, answers.email)
-            engineerHTML(engineer);
-        } else {
-            const intern =  new Intern(answers.name, answers.id, answers.school, answers.email)
-            internHTML(intern)
-        }
-        addOrDone();
-    })
-}
-
-const managerHTML = (manager) => {
-    const { name, id, email, officeNum } = manager
-    const mHTML = `
-    <!DOCTYPE html>
+const openHTML = () => {
+    const oHTML = `<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -97,7 +73,29 @@ const managerHTML = (manager) => {
         </div>
     </div>
     <div class=container>
-        <div class="row">
+        <div class="row">`
+    fs.writeFile('./dist/team.html', oHTML, (err) => err ? console.log(err) : '')
+
+}
+const newTeamMember = () => {
+    inquirer.prompt(questions).then((answers) => {
+        if (answers.title === 'Manager') {
+            const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
+            managerHTML(manager);
+        } else if (answers.title === 'Engineer') {
+            const engineer = new Engineer(answers.name, answers.id, answers.github, answers.email)
+            engineerHTML(engineer);
+        } else {
+            const intern = new Intern(answers.name, answers.id, answers.school, answers.email)
+            internHTML(intern)
+        }
+        addOrDone();
+    })
+}
+
+const managerHTML = (manager) => {
+    const { name, id, officeNum, email } = manager
+    const mHTML = `
             <div class =col>
                 <div class="card" style="width: 13rem;">
                     <div class="card-header bg-dark text-white">
@@ -106,14 +104,14 @@ const managerHTML = (manager) => {
                     <div class="card-body">
                         <h5 class="card-title">${name}</h5>
                         <ul>
-                            <li>${id}</li>
-                            <li>${officeNum}</li>
+                            <li>ID: ${id}</li>
+                            <li>Office: ${officeNum}</li>
                             <li><a href="mailto:${email}" class="card-link">${email}</a></li>
                         </ul>
                     </div>
                 </div>
             </div>`
-    fs.writeFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
+    fs.appendFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
 };
 
 const engineerHTML = (engineer) => {
@@ -127,8 +125,8 @@ const engineerHTML = (engineer) => {
             <div class="card-body">
                 <h5 class="card-title">${name}</h5>
                 <ul>
-                    <li>${id}</li>
-                    <li><a href="https://github.com/${github}" class="card-link">GitHub Profile: ${github}</a></li>
+                    <li>ID: ${id}</li>
+                    <li><a href="https://github.com/${github}" target="_blank" class="card-link">GitHub Profile: ${github}</a></li>
                     <li><a href="mailto:${email}" class="card-link">${email}</a></li>
                 </ul>
             </div>
@@ -148,7 +146,7 @@ const internHTML = (intern) => {
             <div class="card-body">
                 <h5 class="card-title">${name}</h5>
                 <ul>
-                    <li>${id}</li>
+                    <li>ID: ${id}</li>
                     <li>${school}</li>
                     <li><a href="mailto:${email}" class="card-link">${email}</a></li>
                 </ul>
@@ -182,4 +180,5 @@ const addOrDone = () => {
     });
 };
 
+openHTML();
 newTeamMember();
