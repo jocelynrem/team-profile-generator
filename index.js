@@ -119,7 +119,7 @@ const managerHTML = (manager) => {
 <body>
     <div class="jumbotron jumbotron-fluid bg-success bg-gradient text-white">
         <div class="container">
-            <h1 class="display-1">Team Profile</h1>
+            <h1 class="display-1">My Team</h1>
         </div>
     </div>
     <div class=container>
