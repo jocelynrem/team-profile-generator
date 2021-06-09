@@ -43,7 +43,7 @@ const teamQuestions = [
         type: 'list',
         name: 'title',
         message: "Employee Title:",
-        choices: ['Engineer', 'Intern'],   
+        choices: ['Engineer', 'Intern'],
     },
     {
         type: 'input',
@@ -82,6 +82,26 @@ const teamQuestions = [
 ]
 
 const startGen = () => {
+    const openHTML =
+        `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="jumbotron jumbotron-fluid bg-success bg-gradient text-white">
+        <div class="container">
+            <h1 class="display-1">My Team</h1>
+        </div>
+    </div>
+    <div class=container>`
+    fs.writeFile('./dist/team.html', openHTML, (err) => err ? console.log(err) : '')
     inquirer.prompt(managerQuestions).then((answers) => {
         const manager = new Manager(answers.name, answers.id, answers.officeNum, answers.email)
         managerHTML(manager);
@@ -104,25 +124,6 @@ const newTeamMember = () => {
 
 const managerHTML = (manager) => {
     const mHTML = `
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Profile</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-</head>
-
-<body>
-    <div class="jumbotron jumbotron-fluid bg-success bg-gradient text-white">
-        <div class="container">
-            <h1 class="display-1">My Team</h1>
-        </div>
-    </div>
-    <div class=container>
         <div class="row">
             <div class =col>
                 <div class="card" style="width: 15rem;">
@@ -139,7 +140,7 @@ const managerHTML = (manager) => {
                     </div>
                 </div>
             </div>`
-    fs.writeFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
+    fs.appendFile('./dist/team.html', mHTML, (err) => err ? console.log(err) : '')
 };
 
 const engineerHTML = (engineer) => {
